@@ -13,7 +13,7 @@ module.exports = {
 		filename: production
 			? 'static/scripts/[name].[contenthash].js'
 			: 'static/scripts/[name].js', // имя нашего бандла
-		publicPath: '/',
+		publicPath: production ? './' : '/',
 	},
 	//Нужно помочь вебпаку научится работать с jsx и tsx файлами для этого используют ts loader
 	module: {
@@ -41,12 +41,16 @@ module.exports = {
 				type: 'asset/resource',
 				generator: {
 					filename: 'static/fonts/[hash][ext][query]',
+					publicPath: production ? './' : '/',
 				},
 			},
 			{
 				test: /\.svg$/i,
-				issuer: /\.[jt]sx?$/,
-				use: ['@svgr/webpack', 'url-loader'],
+				type: 'asset/resource',
+				generator: {
+					filename: 'static/images/[hash][ext][query]',
+					publicPath: production ? './' : '/',
+				},
 			},
 			{
 				test: /\.(sa|sc|c)ss$/,

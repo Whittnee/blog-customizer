@@ -1,4 +1,5 @@
 {
+	"homepage": "https://whittnee.github.io/blog-customizer",
 	"name": "blog-customizer",
 	"version": "1.0.0",
 	"main": "index.js",
@@ -71,6 +72,7 @@
 		"commit": "npm run test && cz",
 		"storybook": "storybook dev -p 6006",
 		"build-storybook": "storybook build",
+		"predeploy": "npm run build",
 		"deploy": "gh-pages -d dist"
 	},
 	"eslintConfig": {
@@ -92,6 +94,5 @@
 		"commitizen": {
 			"path": "./node_modules/cz-conventional-changelog"
 		}
-	},
-	"homepage": "./"
+	}
 }

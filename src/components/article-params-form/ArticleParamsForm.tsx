@@ -11,42 +11,37 @@ import {
 	fontColors,
 	fontFamilyOptions,
 	fontSizeOptions,
-	defaultStyleValues,
+	ArticleStateType,
+	OptionType,
+	defaultArticleState,
 } from 'src/constants/articleProps';
 import { RadioGroup } from 'src/ui/radio-group';
 import { useOutsideClickClose } from './hooks/useOutsideClickClose';
 import { Separator } from 'src/ui/separator';
 
-type StylePropsType = typeof defaultStyleValues;
 type ArticleParamsFormProps = {
-	setStyleProps: React.Dispatch<React.SetStateAction<StylePropsType>>;
+	setStyleProps: React.Dispatch<React.SetStateAction<ArticleStateType>>;
 };
 
 export const ArticleParamsForm = ({
 	setStyleProps,
 }: ArticleParamsFormProps) => {
 	const [isFormOpen, setIsFormOpen] = useState(false);
-	const [fontFamily, setFontFamily] = useState(fontFamilyOptions[0]);
-	const [fontSize, setFontSize] = useState(fontSizeOptions[0]);
-	const [fontColor, setFontColor] = useState(fontColors[0]);
-	const [backgroundColor, setBackgroundColor] = useState(backgroundColors[0]);
-	const [contentWidth, setContentWidth] = useState(contentWidthArr[0]);
+	const [state, setState] = useState(defaultArticleState);
 
-	const styleValues = {
-		'--font-family': fontFamily.value,
-		'--font-size': fontSize.value,
-		'--font-color': fontColor.value,
-		'--container-width': contentWidth.value,
-		'--bg-color': backgroundColor.value,
+	const handleOnChange = (field: keyof ArticleStateType) => {
+		return (value: OptionType) => {
+			setState((prevState) => ({ ...prevState, [field]: value }));
+		};
 	};
 
-	const resetFields = [
-		{ setter: setFontFamily, defaultValue: fontFamilyOptions[0] },
-		{ setter: setFontSize, defaultValue: fontSizeOptions[0] },
-		{ setter: setFontColor, defaultValue: fontColors[0] },
-		{ setter: setContentWidth, defaultValue: contentWidthArr[0] },
-		{ setter: setBackgroundColor, defaultValue: backgroundColors[0] },
-	];
+	const styleStates: ArticleStateType = {
+		fontFamilyOption: state.fontFamilyOption,
+		fontColor: state.fontColor,
+		backgroundColor: state.backgroundColor,
+		contentWidth: state.contentWidth,
+		fontSizeOption: state.fontSizeOption,
+	};
 
 	const rootRef = useRef<HTMLDivElement>(null);
 	useOutsideClickClose({
@@ -70,48 +65,46 @@ export const ArticleParamsForm = ({
 					className={styles.form}
 					onSubmit={(e) => {
 						e.preventDefault();
-						setStyleProps(styleValues);
+						setStyleProps(styleStates);
 					}}
 					onReset={(e) => {
 						e.preventDefault();
-						resetFields.forEach(({ setter, defaultValue }) =>
-							setter(defaultValue)
-						);
-						setStyleProps(defaultStyleValues);
+						setState(defaultArticleState);
+						setStyleProps(defaultArticleState);
 					}}>
 					<Text size={31} weight={800} uppercase={true}>
 						задайте параметры
 					</Text>
 					<Select
-						selected={fontFamily}
+						selected={state.fontFamilyOption}
 						options={fontFamilyOptions}
-						onChange={setFontFamily}
+						onChange={handleOnChange('fontFamilyOption')}
 						title='шрифт'
 					/>
 					<RadioGroup
 						name='radio'
-						selected={fontSize}
+						selected={state.fontSizeOption}
 						options={fontSizeOptions}
-						onChange={setFontSize}
+						onChange={handleOnChange('fontSizeOption')}
 						title='размер шрифта'
 					/>
 					<Select
-						selected={fontColor}
+						selected={state.fontColor}
 						options={fontColors}
-						onChange={setFontColor}
+						onChange={handleOnChange('fontColor')}
 						title='цвет шрифта'
 					/>
 					<Separator />
 					<Select
-						selected={backgroundColor}
+						selected={state.backgroundColor}
 						options={backgroundColors}
-						onChange={setBackgroundColor}
+						onChange={handleOnChange('backgroundColor')}
 						title='цвет фона'
 					/>
 					<Select
-						selected={contentWidth}
+						selected={state.contentWidth}
 						options={contentWidthArr}
-						onChange={setContentWidth}
+						onChange={handleOnChange('contentWidth')}
 						title='ширина контента'
 					/>
 					<div className={styles.bottomContainer}>
